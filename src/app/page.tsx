@@ -32,15 +32,30 @@ export default async function Home() {
         </div>
       </nav>
 
+
+
       {/* Hero Section */}
-      <section className="flex-grow flex flex-col justify-center pt-48 pb-20 container mx-auto px-6 relative">
-        <div className="max-w-7xl w-full relative z-10">
-          {/* Headline - Added explicit margin to avoid nav overlap */}
-          <div className="mb-16 md:mb-24">
-            <h1 className="font-heading text-[12vw] md:text-[9rem] font-bold leading-[0.85] tracking-tighter text-century-black block">
-              Timeless <br />
-              <span className="italic font-light text-gray-400">Architecture.</span>
-            </h1>
+      <section className="flex-grow flex flex-col justify-center pt-48 pb-20 px-8 md:px-16 relative">
+        <div className="w-full relative z-10">
+          {/* Headline + Logo row */}
+          <div className="mb-16 md:mb-24 md:grid md:grid-cols-[55%_1px_1fr] md:items-center md:gap-8">
+            <div>
+              <h1 className="font-heading text-[10vw] md:text-[7rem] font-bold leading-[0.85] tracking-tighter text-century-black block">
+                Timeless <br />
+                <span className="italic font-light text-gray-400">Architecture.</span>
+              </h1>
+            </div>
+            {/* Vertical Divider */}
+            <div className="hidden md:block self-stretch bg-gray-200"></div>
+            <div className="hidden md:flex items-center justify-center">
+              <Image
+                src="/logo-stacked.png"
+                alt="Century Homes Logo"
+                width={500}
+                height={500}
+                className="object-contain w-full max-w-[500px]"
+              />
+            </div>
           </div>
 
           {/* Content Grid - Simplified for better alignment */}
