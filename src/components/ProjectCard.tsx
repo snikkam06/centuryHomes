@@ -21,7 +21,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             whileInView={!isPriority ? { opacity: 1, y: 0 } : undefined}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.8, delay: index * 0.1 }}
-            className={`group flex flex-col ${index % 2 === 1 ? 'md:mt-24' : ''}`}
+            className="group flex flex-col"
         >
             {/* Image Container - Natural Aspect Ratio */}
             <div className="relative w-full overflow-hidden bg-gray-100 mb-8">
