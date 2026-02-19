@@ -59,6 +59,7 @@ export default defineType({
                     { title: 'Sold', value: 'sold' },
                     { title: 'Under Contract', value: 'underContract' },
                     { title: 'Under Construction', value: 'underConstruction' },
+                    { title: 'Planning', value: 'planning' },
                 ],
             },
             initialValue: 'available',
