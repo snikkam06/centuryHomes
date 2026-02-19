@@ -1,12 +1,42 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { settingsQuery } from "@/sanity/lib/queries";
+import { useState, useEffect } from "react";
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic'; // Not needed for client components
 
-export default async function ContactPage() {
-    const settings = await client.fetch(settingsQuery);
+export default function ContactPage() {
+    const [settings, setSettings] = useState<any>(null);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    useEffect(() => {
+        client.fetch(settingsQuery).then(setSettings);
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setStatus('loading');
+
+        try {
+            const res = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) throw new Error('Failed to send');
+
+            setStatus('success');
+            setFormData({ name: '', email: '', message: '' });
+        } catch (error) {
+            console.error(error);
+            setStatus('error');
+        }
+    };
 
     return (
         <main className="min-h-screen bg-white text-century-black font-sans selection:bg-century-green selection:text-white flex flex-col justify-between">
@@ -58,22 +88,48 @@ export default async function ContactPage() {
                     </div>
 
                     <div className="bg-century-gray/20 p-12">
-                        <form className="space-y-8">
+                        <form onSubmit={handleSubmit} className="space-y-8">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Name</label>
-                                <input className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors" type="text" placeholder="Your Name" />
+                                <input
+                                    className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
+                                    type="text"
+                                    placeholder="Your Name"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    required
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Email</label>
-                                <input className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors" type="email" placeholder="email@address.com" />
+                                <input
+                                    className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
+                                    type="email"
+                                    placeholder="email@address.com"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    required
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Vision</label>
-                                <textarea className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors" rows={4} placeholder="Tell us about your project..."></textarea>
+                                <textarea
+                                    className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
+                                    rows={4}
+                                    placeholder="Tell us about your project..."
+                                    value={formData.message}
+                                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                    required
+                                ></textarea>
                             </div>
-                            <button className="w-full py-4 bg-black text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-century-green transition-colors duration-500">
-                                Send Message
+                            <button
+                                type="submit"
+                                disabled={status === 'loading'}
+                                className="w-full py-4 bg-black text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-century-green transition-colors duration-500 disabled:opacity-50"
+                            >
+                                {status === 'loading' ? 'Sending...' : status === 'success' ? 'Message Sent' : 'Send Message'}
                             </button>
+                            {status === 'error' && <p className="text-red-500 text-xs">Something went wrong. Please try again.</p>}
                         </form>
                     </div>
                 </div>
