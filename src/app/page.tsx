@@ -77,9 +77,6 @@ export default async function Home() {
       <section className="py-40 bg-gray-50 border-t border-gray-100">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-            <h2 className="font-heading text-4xl md:text-6xl mb-12 leading-tight text-century-black">
-              &quot;We don&apos;t just build structures. <br /> We curate spatial experiences.&quot;
-            </h2>
             <Link href="/contact" className="inline-flex items-center justify-center px-12 py-6 bg-century-green text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-black transition-all duration-300 shadow-xl shadow-century-green/20">
               Let's Talk
             </Link>
