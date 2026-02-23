@@ -41,8 +41,8 @@ export default async function Home() {
           <div className="mb-16 md:mb-24 md:grid md:grid-cols-[55%_1px_1fr] md:items-center md:gap-8">
             <div>
               <h1 className="font-heading text-[10vw] md:text-[7rem] font-bold leading-[0.85] tracking-tighter text-century-black block">
-                Timeless <br />
-                <span className="italic font-light text-gray-400">Architecture.</span>
+                Just <br />
+                <span className="italic font-light text-gray-400">Right.</span>
               </h1>
             </div>
             {/* Vertical Divider */}
@@ -61,9 +61,6 @@ export default async function Home() {
           {/* Content Grid - Simplified for better alignment */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end max-w-5xl">
             <div>
-              <p className="text-xl md:text-2xl text-gray-500 font-light leading-relaxed block">
-                We build homes that bridge the gap between modern design and enduring legacy. A gallery of life, built to last a century.
-              </p>
             </div>
 
             <div className="flex md:justify-start">
@@ -84,7 +81,7 @@ export default async function Home() {
               &quot;We don&apos;t just build structures. <br /> We curate spatial experiences.&quot;
             </h2>
             <Link href="/contact" className="inline-flex items-center justify-center px-12 py-6 bg-century-green text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-black transition-all duration-300 shadow-xl shadow-century-green/20">
-              Start Your Project
+              Let's Talk
             </Link>
           </div>
         </div>

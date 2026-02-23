@@ -34,7 +34,7 @@ export default async function ProjectsPage() {
 
             <div className="pt-40 pb-20 container mx-auto px-8">
                 <h1 className="font-heading text-6xl md:text-[6rem] leading-none mb-32 tracking-tighter">
-                    Curated <br /> <span className="italic text-gray-400">Works.</span>
+                    Our <br /> <span className="italic text-gray-400">Homes.</span>
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-32">
