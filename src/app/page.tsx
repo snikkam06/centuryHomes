@@ -65,7 +65,7 @@ export default async function Home() {
 
             <div className="flex md:justify-start">
               <Link href="/projects" className="group flex items-center gap-4 text-sm font-bold tracking-[0.2em] uppercase text-century-black hover:text-century-green transition-colors">
-                View The Collection
+                View Homes
                 <span className="w-16 h-[1px] bg-black group-hover:bg-century-green transition-colors"></span>
               </Link>
             </div>
