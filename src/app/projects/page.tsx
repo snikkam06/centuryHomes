@@ -2,12 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { projectsQuery } from "@/sanity/lib/queries";
-import ProjectCard from "@/components/ProjectCard";
+import ProjectCard, { type ProjectPreview } from "@/components/ProjectCard";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProjectsPage() {
-    const projects = await client.fetch(projectsQuery);
+    const projects = await client.fetch<ProjectPreview[]>(projectsQuery);
 
     return (
         <main className="min-h-screen bg-white text-century-black font-sans selection:bg-century-green selection:text-white">
@@ -39,7 +39,7 @@ export default async function ProjectsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-32">
                     {projects.length > 0 ? (
-                        projects.map((project: { _id: string; title: string; mainImage: any; status?: string; lotNumber: string; address: string; bedrooms?: number; bathrooms?: number; sqFt?: number }, index: number) => (
+                        projects.map((project, index) => (
                             <ProjectCard key={project._id} project={project} index={index} />
                         ))
                     ) : (

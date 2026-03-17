@@ -2,17 +2,44 @@
 
 import Image from "next/image";
 import * as motion from "framer-motion/client";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { urlFor } from "@/sanity/lib/image";
 
 import { Bed, Bath, Ruler } from "lucide-react";
 
+export interface ProjectPreview {
+    _id: string;
+    title: string;
+    lotNumber: string;
+    address: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    sqFt?: number;
+    status?: string;
+    mainImage?: SanityImageSource;
+}
+
 interface ProjectCardProps {
-    project: any; // Using any to match existing loose typing
+    project: ProjectPreview;
     index: number;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+    available: "Available",
+    pending: "Pending",
+    sold: "Sold",
+    underContract: "Under Contract",
+    underConstruction: "Under Construction",
+    planning: "Planning",
+};
+
 export default function ProjectCard({ project, index }: ProjectCardProps) {
     const isPriority = index < 3;
+    const statusLabel = project.status ? STATUS_LABELS[project.status] ?? project.status : null;
+    const statusClasses =
+        project.status === "available"
+            ? "bg-century-green text-white"
+            : "bg-white/90 text-century-black backdrop-blur";
 
     return (
         <motion.div
@@ -37,9 +64,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
                 )}
 
                 {/* Status Overlay */}
-                {project.status && project.status !== 'available' && (
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 text-[10px] uppercase tracking-widest font-bold">
-                        {project.status}
+                {statusLabel && (
+                    <div
+                        className={`absolute top-4 right-4 px-3 py-1 text-[10px] uppercase tracking-widest font-bold ${statusClasses}`}
+                    >
+                        {statusLabel}
                     </div>
                 )}
             </div>
