@@ -67,9 +67,6 @@ export default function ContactPage() {
                         <h1 className="font-heading text-6xl md:text-[5rem] leading-[0.9] tracking-tighter mb-12">
                             Start the <br /> Conversation.
                         </h1>
-                        <p className="text-gray-500 text-lg font-light max-w-md leading-relaxed mb-12">
-                            We are currently accepting new projects for the upcoming season. Reach out to discuss your vision.
-                        </p>
 
                         <div className="space-y-8">
                             <div>
