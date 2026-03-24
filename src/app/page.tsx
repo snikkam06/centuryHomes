@@ -1,13 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { client } from "@/sanity/lib/client";
-import { settingsQuery } from "@/sanity/lib/queries";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const settings = await client.fetch(settingsQuery);
-
   return (
     <main className="min-h-screen bg-white text-century-black font-sans selection:bg-century-green selection:text-white flex flex-col">
 
@@ -78,7 +74,7 @@ export default async function Home() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
             <Link href="/contact" className="inline-flex items-center justify-center px-12 py-6 bg-century-green text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-black transition-all duration-300 shadow-xl shadow-century-green/20">
-              Let's Talk
+              Let&apos;s Talk
             </Link>
           </div>
         </div>

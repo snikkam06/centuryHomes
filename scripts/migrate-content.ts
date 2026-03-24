@@ -1,7 +1,5 @@
-import { createClient } from 'next-sanity'
 import path from 'path'
 import fs from 'fs'
-import { projectId, dataset, apiVersion } from '../src/sanity/env'
 
 // We need a client with a token, but 'sanity exec' provides one via the context if we use the sanity cli client
 // However, standard specific migration scripts often just use the SDK. 

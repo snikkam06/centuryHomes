@@ -5,36 +5,81 @@ import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 import { settingsQuery } from "@/sanity/lib/queries";
 import { useState, useEffect } from "react";
+import { CONTACT_FORM_MIN_FILL_MS } from "@/lib/contact-form";
 
 // export const dynamic = 'force-dynamic'; // Not needed for client components
 
+type ContactSettings = {
+    contactEmail?: string;
+    phoneNumber?: string;
+};
+
 export default function ContactPage() {
-    const [settings, setSettings] = useState<any>(null);
+    const [settings, setSettings] = useState<ContactSettings | null>(null);
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [company, setCompany] = useState('');
+    const [formStartedAt, setFormStartedAt] = useState(() => Date.now());
+    const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         client.fetch(settingsQuery).then(setSettings);
     }, []);
 
+    useEffect(() => {
+        setIsReadyToSubmit(false);
+
+        const timeoutId = window.setTimeout(() => {
+            setIsReadyToSubmit(true);
+        }, CONTACT_FORM_MIN_FILL_MS);
+
+        return () => {
+            window.clearTimeout(timeoutId);
+        };
+    }, [formStartedAt]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!isReadyToSubmit) {
+            setStatus('error');
+            setErrorMessage('Please take a moment to fill out the form before sending.');
+            return;
+        }
+
         setStatus('loading');
+        setErrorMessage(null);
 
         try {
             const res = await fetch('/api/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    company,
+                    formStartedAt,
+                }),
             });
 
-            if (!res.ok) throw new Error('Failed to send');
+            const data = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                throw new Error(data?.error || 'Failed to send');
+            }
 
             setStatus('success');
             setFormData({ name: '', email: '', message: '' });
+            setCompany('');
+            setFormStartedAt(Date.now());
         } catch (error) {
             console.error(error);
             setStatus('error');
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : 'Something went wrong. Please try again.',
+            );
         }
     };
 
@@ -86,34 +131,52 @@ export default function ContactPage() {
 
                     <div className="bg-century-gray/20 p-12">
                         <form onSubmit={handleSubmit} className="space-y-8">
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Name</label>
+                            <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                                <label htmlFor="company">Company</label>
                                 <input
+                                    id="company"
+                                    type="text"
+                                    name="company"
+                                    tabIndex={-1}
+                                    autoComplete="organization"
+                                    value={company}
+                                    onChange={(e) => setCompany(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="name" className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Name</label>
+                                <input
+                                    id="name"
                                     className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
                                     type="text"
                                     placeholder="Your Name"
+                                    autoComplete="name"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Email</label>
+                                <label htmlFor="email" className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Email</label>
                                 <input
+                                    id="email"
                                     className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
                                     type="email"
                                     placeholder="email@address.com"
+                                    autoComplete="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Vision</label>
+                                <label htmlFor="message" className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500">Vision</label>
                                 <textarea
+                                    id="message"
                                     className="w-full bg-transparent border-b border-gray-300 pb-2 focus:border-century-green focus:outline-none transition-colors"
                                     rows={4}
                                     placeholder="Tell us about your project..."
+                                    autoComplete="off"
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     required
@@ -121,12 +184,21 @@ export default function ContactPage() {
                             </div>
                             <button
                                 type="submit"
-                                disabled={status === 'loading'}
+                                disabled={status === 'loading' || !isReadyToSubmit}
                                 className="w-full py-4 bg-black text-white text-xs font-bold tracking-[0.2em] uppercase hover:bg-century-green transition-colors duration-500 disabled:opacity-50"
                             >
                                 {status === 'loading' ? 'Sending...' : status === 'success' ? 'Message Sent' : 'Send Message'}
                             </button>
-                            {status === 'error' && <p className="text-red-500 text-xs">Something went wrong. Please try again.</p>}
+                            {!isReadyToSubmit && (
+                                <p className="text-xs text-gray-500">
+                                    Please take a moment to fill out the form before sending.
+                                </p>
+                            )}
+                            {status === 'error' && (
+                                <p className="text-red-500 text-xs">
+                                    {errorMessage || 'Something went wrong. Please try again.'}
+                                </p>
+                            )}
                         </form>
                     </div>
                 </div>
